@@ -27,7 +27,7 @@ class BusinessLeadNotificationTest extends TestCase
     {
         return array_merge([
             'first_name' => 'Rohan', 'last_name' => 'Rao', 'email' => 'rohan@quasar.example', 'phone' => '0501234567',
-            'position' => 'Ops Manager', 'company_name' => 'Quasar Dynamics', 'number_of_parcel' => '200',
+            'position' => 'Ops Manager', 'company_name' => 'Quasar Dynamics', 'number_of_parcel' => '50-100',
             'current_delivery_partner' => 'Aramex',
         ], $o);
     }

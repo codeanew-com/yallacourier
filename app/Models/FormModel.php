@@ -19,6 +19,9 @@ class FormModel extends Model
 {
     protected $table = 'form';
 
+    /** "Parcels per month" choices on the business form, stored as shown. */
+    public const PARCEL_RANGES = ['7-10', '10-12', '20-50', '50-100', '100+'];
+
     use HasFactory;
 
     protected $fillable = [

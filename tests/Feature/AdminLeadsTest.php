@@ -126,9 +126,40 @@ class AdminLeadsTest extends TestCase
     {
         $this->post(route('form.submit'), [
             'first_name' => 'Web', 'last_name' => 'Visitor'.uniqid(), 'email' => 'web@example.com', 'phone' => '0501', 'position' => 'Owner',
-            'company_name' => 'Webco', 'number_of_parcel' => '5', 'current_delivery_partner' => 'None',
+            'company_name' => 'Webco', 'number_of_parcel' => '100+', 'current_delivery_partner' => 'None',
         ])->assertRedirect(route('lead.thankyou'));
         $this->assertNull(FormModel::where('company_name', 'Webco')->latest('id')->first()->read_at);
+    }
+
+    public function test_public_form_stores_the_parcel_range_and_rejects_other_values(): void
+    {
+        $data = fn ($parcels) => [
+            'first_name' => 'Range', 'last_name' => 'Test'.uniqid(), 'email' => 'range@example.com', 'phone' => '0501', 'position' => 'Owner',
+            'company_name' => 'Rangeco', 'number_of_parcel' => $parcels, 'current_delivery_partner' => 'None',
+        ];
+
+        $this->post(route('form.submit'), $data('20-50'))->assertRedirect(route('lead.thankyou'));
+        $this->assertSame('20-50', FormModel::where('company_name', 'Rangeco')->latest('id')->value('number_of_parcel'));
+
+        $this->from('/business')->post(route('form.submit'), $data('3'))->assertSessionHasErrors('number_of_parcel');
+        $this->from('/business')->post(route('form.submit'), $data('a million'))->assertSessionHasErrors('number_of_parcel');
+    }
+
+    public function test_migration_converts_old_option_codes_to_ranges(): void
+    {
+        $ids = [];
+        foreach (['1', '2', '3', '4', '5', 'other'] as $code) {
+            $ids[$code] = FormModel::create([
+                'first_name' => 'Old', 'last_name' => 'Lead', 'email' => 'old@example.com', 'phone' => '0501', 'position' => 'x',
+                'company_name' => 'Oldco', 'number_of_parcel' => $code, 'current_delivery_partner' => 'x',
+            ])->id;
+        }
+
+        $migration = require database_path('migrations/2026_10_21_020000_store_parcel_ranges_on_business_leads.php');
+        $migration->up();
+
+        $stored = fn ($code) => FormModel::find($ids[$code])->number_of_parcel;
+        $this->assertSame(['7-10', '10-12', '20-50', '50-100', '100+', 'other'], array_map($stored, ['1', '2', '3', '4', '5', 'other']));
     }
 
     public function test_orders_badge_counts_only_pending_and_follows_status_changes(): void

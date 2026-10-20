@@ -181,11 +181,9 @@ Take advantage of our bulk discounted partner rates with all leading couriers in
 										<div class="input-wrapper selectarrow">
 											<select name="number_of_parcel">
 												<option value="">Parcels Per Month</option>
-												<option value="1">7-10</option>
-												<option value="2">10-12</option>
-												<option value="3">20-50</option>
-												<option value="4">50-100</option>
-												<option value="5">100+</option>
+												@foreach(\App\Models\FormModel::PARCEL_RANGES as $range)
+												<option value="{{ $range }}" @selected(old('number_of_parcel') === $range)>{{ $range }}</option>
+												@endforeach
 											</select>
 										</div>
 									</div>
