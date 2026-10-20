@@ -7,13 +7,13 @@ use App\Models\LogModel;
 use App\Models\Setting;
 use App\Models\User;
 use App\Notifications\NewBusinessLead;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
-/** New business leads are emailed (queued) to the addresses set in Configuration → Notifications. */
+/** New business leads are emailed immediately (after the response) to the addresses set in Configuration → Notifications. */
 class BusinessLeadNotificationTest extends TestCase
 {
     use DatabaseTransactions;
@@ -37,9 +37,12 @@ class BusinessLeadNotificationTest extends TestCase
         $this->assertSame('quotes@yallashipping.com', Setting::get(Setting::BUSINESS_LEAD_EMAILS));
     }
 
-    public function test_new_lead_is_saved_and_a_queued_email_goes_to_the_configured_addresses(): void
+    public function test_new_lead_is_saved_and_emailed_immediately_to_the_configured_addresses(): void
     {
         Notification::fake();
+        // Even with the database queue (as on the server), nothing waits for a queue worker or cron.
+        config(['queue.default' => 'database']);
+        $jobsBefore = DB::table('jobs')->count();
         Setting::put(Setting::BUSINESS_LEAD_EMAILS, 'quotes@yallashipping.com, sales@example.com');
 
         $this->post(route('form.submit'), $this->lead())->assertRedirect(route('lead.thankyou'));
@@ -48,7 +51,17 @@ class BusinessLeadNotificationTest extends TestCase
         Notification::assertSentTo(new AnonymousNotifiable, NewBusinessLead::class, function ($n, $channels, $notifiable) use ($lead) {
             return $n->lead->is($lead) && $notifiable->routes['mail'] === ['quotes@yallashipping.com', 'sales@example.com'];
         });
-        $this->assertInstanceOf(ShouldQueue::class, new NewBusinessLead($lead));
+        $this->assertSame($jobsBefore, DB::table('jobs')->count(), 'the email must not be queued');
+    }
+
+    public function test_mail_failure_never_breaks_the_form(): void
+    {
+        // A broken mail transport: sending throws, the visitor still gets the thank-you page.
+        config(['mail.default' => 'broken', 'mail.mailers.broken' => ['transport' => 'does-not-exist']]);
+
+        $this->post(route('form.submit'), $this->lead(['email' => 'still.saved@example.com']))->assertRedirect(route('lead.thankyou'));
+
+        $this->assertTrue(FormModel::where('email', 'still.saved@example.com')->exists());
     }
 
     public function test_email_content_and_reply_to_the_lead(): void

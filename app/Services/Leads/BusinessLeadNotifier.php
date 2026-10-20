@@ -29,8 +29,9 @@ class BusinessLeadNotifier
     }
 
     /**
-     * Queue the email. Never throws: the lead is already saved, and a mail or
-     * queue problem must not turn the visitor's submission into an error.
+     * Send the email right after the visitor's response has gone out: staff get it
+     * within seconds and the form doesn't wait for the mail server. No queue worker
+     * or cron is involved. Never throws, because the lead is already saved.
      */
     public function notify(FormModel $lead): void
     {
@@ -39,10 +40,12 @@ class BusinessLeadNotifier
             return;
         }
 
-        try {
-            Notification::route('mail', $to)->notify(new NewBusinessLead($lead));
-        } catch (\Throwable $e) {
-            Log::error('Business lead notification could not be queued', ['lead' => $lead->id, 'error' => class_basename($e).': '.$e->getMessage()]);
-        }
+        dispatch(function () use ($lead, $to) {
+            try {
+                Notification::route('mail', $to)->notifyNow(new NewBusinessLead($lead));
+            } catch (\Throwable $e) {
+                Log::error('Business lead notification email failed', ['lead' => $lead->id, 'to' => $to, 'error' => class_basename($e).': '.$e->getMessage()]);
+            }
+        })->afterResponse();
     }
 }

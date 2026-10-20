@@ -4,23 +4,17 @@ namespace App\Notifications;
 
 use App\Models\FormModel;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 /**
- * Tells staff a business lead came in. Queued, so the visitor's form submits
- * without waiting for the mail server; the scheduler's queue worker sends it
- * (routes/console.php). Reply-To is the lead, so staff can just hit Reply.
+ * Tells staff a business lead came in. Sent right after the visitor's response
+ * (BusinessLeadNotifier), so it arrives immediately without slowing the form.
+ * Reply-To is the lead, so staff can just hit Reply.
  */
-class NewBusinessLead extends Notification implements ShouldQueue
+class NewBusinessLead extends Notification
 {
     use Queueable;
-
-    /** Retries if the mail server is temporarily unavailable. */
-    public int $tries = 3;
-
-    public array $backoff = [60, 300];
 
     public function __construct(public FormModel $lead) {}
 
