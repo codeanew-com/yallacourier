@@ -5,6 +5,7 @@
 #   .env             server credentials
 #   storage/         sessions, logs, cache, private shipping labels
 #   public/uploads/  images uploaded through the admin panel
+# and robots.txt / sitemap.xml, which admins edit in the panel (copied only if missing).
 #
 # Required repository settings (Settings → Secrets and variables → Actions):
 #   secrets: SSH_PRIVATE_KEY, SSH_KNOWN_HOSTS, SSH_HOST, SSH_PORT, SSH_USER, DEPLOY_PATH
@@ -124,8 +125,14 @@ jobs:
             --exclude='/.env' \
             --exclude='/storage/' \
             --exclude='/public/uploads/' \
+            --exclude='/public/robots.txt' \
+            --exclude='/public/sitemap.xml' \
             -e "ssh -F $HOME/.ssh/config" \
             ./ "server:$DEPLOY_PATH/"
+          # robots.txt and sitemap.xml are edited/generated in the admin (SEO), so the
+          # server's copies win; the repo's copies are only put in place if missing.
+          rsync -a --ignore-existing -e "ssh -F $HOME/.ssh/config" \
+            public/robots.txt public/sitemap.xml "server:$DEPLOY_PATH/public/"
 
       - name: Migrate and rebuild caches
         run: |

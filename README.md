@@ -73,6 +73,8 @@ The server becomes an exact copy of the repository: files removed from the repo 
 the server. Three paths are never touched, because they hold server data that git doesn't have:
 **`.env`**, **`storage/`** (sessions, logs, private shipping labels) and **`public/uploads/`**.
 Change the live configuration by editing `.env` on the server.
+`public/robots.txt` and `public/sitemap.xml` are edited in the admin (SEO), so the server's copies
+are kept too; the repository's versions are only uploaded when the file is missing on the server.
 
 Repository settings → *Secrets and variables → Actions → Secrets* (all six are secrets, because the repository is public):
 
