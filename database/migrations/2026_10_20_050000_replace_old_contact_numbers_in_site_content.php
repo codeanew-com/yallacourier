@@ -43,7 +43,7 @@ return new class extends Migration
         $total = 0;
 
         foreach (self::COLUMNS as $table => $columns) {
-            if (!Schema::hasTable($table)) {
+            if (! Schema::hasTable($table)) {
                 continue;
             }
             $columns ??= collect(Schema::getColumns($table))

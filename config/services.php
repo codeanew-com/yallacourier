@@ -35,7 +35,6 @@ return [
         ],
     ],
 
-
     // Browser key used by the address autocomplete on the booking forms.
     'google_maps' => [
         'key' => env('GOOGLE_MAPS_API_KEY'),
