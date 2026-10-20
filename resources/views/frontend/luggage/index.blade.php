@@ -7,15 +7,6 @@
 
 @section('content')
 
-
-<script>
-window.onload = function() {
-    // similar behavior as clicking on a link
-    window.location.href = "https://yallaluggage.com/";
-}
-</script>
-
-
 <div class="luggage">
 
     <section class="home-banner-sec new-banner-sec ">

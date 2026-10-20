@@ -101,7 +101,7 @@
 										<li><a href="{{ url('/contact-us')}}">Contact Us</a></li>
 										@php $page=\App\Models\PageModel::find(26); @endphp
 										@if($page)
-										<li><a href="{{ url('/'.$page->slug)}}">{{ $page->title }}</a></li>
+										<li><a href="https://yallaluggage.com/">{{ $page->title }}</a></li>
 										@endif
 										{{-- Customer login/My account link disabled per owner request (2026-10-03) — not deleted, see master.blade.php history.
 										<li>
@@ -150,7 +150,7 @@
 				<li><a href="{{ url('/our-couriers') }}">Couriers</a></li>
 				<li><a href="{{ url('/shipping-made-simple')}}">Shipping & Guidelines</a></li>
 				<li><a href="{{ url('/contact-us')}}">Contact Us</a></li>
-				<li><a href="{{ url('/luggage')}}">Luggage</a></li>
+				<li><a href="https://yallaluggage.com/">Luggage</a></li>
 				{{-- Customer login/My account link disabled per owner request (2026-10-03) — not deleted, see master.blade.php history.
 				<li>
 					@if(Auth::guard('customers')->check())
