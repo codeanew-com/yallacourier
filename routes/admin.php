@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\CourierController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\NotificationSettingsController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PageMetaController;
@@ -87,6 +88,10 @@ Route::prefix('admin')->middleware('auth')->group(function () {
     Route::post('business-leads/{lead}/restore', [BusinessLeadController::class, 'restore'])->name('admin.businessleads.restore')->whereNumber('lead');
     Route::post('business-leads/{lead}/unread', [BusinessLeadController::class, 'markUnread'])->name('admin.businessleads.unread')->whereNumber('lead');
     Route::delete('business-leads/{lead}', [BusinessLeadController::class, 'destroy'])->name('admin.businessleads.destroy')->whereNumber('lead');
+
+    // Who receives notification emails (e.g. new business leads).
+    Route::get('settings/notifications', [NotificationSettingsController::class, 'edit'])->name('admin.settings.notifications');
+    Route::put('settings/notifications', [NotificationSettingsController::class, 'update'])->name('admin.settings.notifications.update');
 
     // SEO files.
     Route::get('robots', [SeoController::class, 'editRobots'])->name('admin.robots');

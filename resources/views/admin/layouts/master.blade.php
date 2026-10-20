@@ -67,6 +67,7 @@
             ],
             'Configuration' => [
                 ['Couriers & Rates', 'admin-couriers.index', 'admin-couriers.*', 'bx-car', null],
+                ['Notifications', 'admin.settings.notifications', 'admin.settings.notifications*', 'bx-bell', null],
                 ['Robots.txt', 'admin.robots', 'admin.robots', 'bx-bot', null],
                 ['Sitemap', 'admin.sitemap', 'admin.sitemap', 'bx-sitemap', null],
             ],

@@ -11,6 +11,8 @@
         ? '<strong>'.$counts['unread'].' unread</strong> · a lead is marked read when you open it.'
         : 'All caught up. A lead is marked read when you open it.',
     'crumbs' => ['Business leads' => null],
+    'actions' => '<a href="'.route('admin.settings.notifications').'" class="btn btn-light btn-sm" title="Change who is emailed about new leads"><i class="bx bx-bell me-1"></i>'
+        .e(($leadEmails = \App\Services\Leads\BusinessLeadNotifier::recipients()) ? 'Emailed to '.implode(', ', $leadEmails) : 'Lead emails off').'</a>',
 ])
 
 <nav class="adm-tabs" aria-label="Lead folders">
