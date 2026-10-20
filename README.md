@@ -55,6 +55,39 @@ These exist on the live server but are deliberately left out of git (see `.gitig
   review photos). Copy them from the server if you need a full local copy of the site.
 - **Databases, dumps, archives and logs** (`*.sql`, `*.sqlite`, `*.zip`, `*.log`).
 
+## Deployment
+
+Every push to `main` deploys to yallacourier.com through GitHub Actions
+(`.github/workflows/deploy.yml`). Nobody runs `git pull` on the server.
+
+1. **Check:** syntax, code style (Pint), and that routes, config and Blade templates compile.
+   Nothing deploys if this fails.
+2. **Deploy:**
+   - Back up the live database to `~/backups/yallacourier/` on the server (the 10 newest are kept).
+   - Put the site in maintenance mode.
+   - Upload the code with production dependencies, built on GitHub.
+   - Run migrations and rebuild the caches.
+   - Bring the site back up and check that `/` and `/login` return 200.
+
+The server becomes an exact copy of the repository: files removed from the repo are removed from
+the server. Three paths are never touched, because they hold server data that git doesn't have:
+**`.env`**, **`storage/`** (sessions, logs, private shipping labels) and **`public/uploads/`**.
+Change the live configuration by editing `.env` on the server.
+
+Repository settings → *Secrets and variables → Actions → Secrets* (all six are secrets, because the repository is public):
+
+| Name | Type | Value |
+|---|---|---|
+| `SSH_PRIVATE_KEY` | secret | Private half of the deploy key (its public half is in the server's `~/.ssh/authorized_keys`) |
+| `SSH_KNOWN_HOSTS` | secret | Output of `ssh-keyscan -p <port> <host>` (lets GitHub verify the server) |
+| `SSH_HOST` | secret | Server address |
+| `SSH_PORT` | secret | SSH port (Hostinger: `65002`) |
+| `SSH_USER` | secret | SSH user |
+| `DEPLOY_PATH` | secret | Absolute path of the site on the server (the folder containing `artisan`) |
+
+A deploy can also be started by hand from the *Actions* tab (*Deploy → Run workflow*).
+To roll back, revert the commit and push; to restore data, use the newest backup in `~/backups/yallacourier/`.
+
 ## Security
 
 - Never commit `.env`, database dumps, customer files or keys. If a secret is ever pushed, treat it

@@ -1,0 +1,154 @@
+# Deploys yallacourier.com on every push to main.
+#
+# The server becomes an exact copy of the repository (files deleted from the
+# repo are deleted on the server), except for what git never contains:
+#   .env             server credentials
+#   storage/         sessions, logs, cache, private shipping labels
+#   public/uploads/  images uploaded through the admin panel
+#
+# Required repository settings (Settings → Secrets and variables → Actions):
+#   secrets: SSH_PRIVATE_KEY, SSH_KNOWN_HOSTS, SSH_HOST, SSH_PORT, SSH_USER, DEPLOY_PATH
+# See README.md, "Deployment".
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never run two deploys at the same time; a newer push waits for the running one.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, intl, zip
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Prepare app
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: PHP syntax
+        run: find app bootstrap config database routes tests -name '*.php' -print0 | xargs -0 -n1 -P4 php -l > /dev/null
+
+      - name: Code style (Pint)
+        run: vendor/bin/pint --test
+
+      - name: Routes, config and Blade templates compile
+        run: |
+          php artisan route:list > /dev/null
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
+  deploy:
+    name: Deploy to yallacourier.com
+    needs: check
+    runs-on: ubuntu-latest
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, intl, zip
+          coverage: none
+
+      # Built here, so the server never runs composer.
+      - name: Install production dependencies
+        run: composer install --no-dev --no-interaction --prefer-dist --no-progress --optimize-autoloader
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" | tr -d '\r' > ~/.ssh/known_hosts
+          cat > ~/.ssh/config <<EOF
+          Host server
+            HostName ${SSH_HOST}
+            Port ${SSH_PORT}
+            User ${SSH_USER}
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+          EOF
+          ssh server 'echo "connected to $(hostname)"'
+
+      - name: Back up the database
+        run: |
+          ssh server bash -s -- "$DEPLOY_PATH" <<'EOF'
+          set -euo pipefail
+          cd "$1"
+          # Read a value from .env (quotes stripped); empty if the key is missing.
+          env_value() { { grep -E "^$1=" .env || true; } | tail -1 | cut -d= -f2- | sed -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//" | tr -d '\r'; }
+          host=$(env_value DB_HOST); port=$(env_value DB_PORT)
+          mkdir -p ~/backups/yallacourier
+          file=~/backups/yallacourier/db-$(date +%Y%m%d-%H%M%S).sql.gz
+          MYSQL_PWD="$(env_value DB_PASSWORD)" mysqldump --single-transaction --quick --no-tablespaces \
+            -h "${host:-localhost}" -P "${port:-3306}" -u "$(env_value DB_USERNAME)" "$(env_value DB_DATABASE)" | gzip > "$file"
+          echo "backup: $file ($(du -h "$file" | cut -f1))"
+          # Keep the 10 newest backups.
+          ls -1t ~/backups/yallacourier/db-*.sql.gz | tail -n +11 | xargs -r rm --
+          EOF
+
+      - name: Maintenance mode on
+        run: ssh server "cd '$DEPLOY_PATH' && php artisan down --retry=15 || true"
+
+      - name: Upload files
+        run: |
+          rsync -az --delete --stats \
+            --exclude='/.git/' \
+            --exclude='/.github/' \
+            --exclude='/node_modules/' \
+            --exclude='/.env' \
+            --exclude='/storage/' \
+            --exclude='/public/uploads/' \
+            -e "ssh -F $HOME/.ssh/config" \
+            ./ "server:$DEPLOY_PATH/"
+
+      - name: Migrate and rebuild caches
+        run: |
+          ssh server bash -s -- "$DEPLOY_PATH" <<'EOF'
+          set -euo pipefail
+          cd "$1"
+          mkdir -p storage/app/private storage/framework/{cache/data,sessions,testing,views} storage/logs bootstrap/cache
+          chmod -R ug+rwX storage bootstrap/cache
+          php artisan migrate --force
+          php artisan optimize:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          EOF
+
+      - name: Maintenance mode off
+        if: always()
+        run: ssh server "cd '$DEPLOY_PATH' && php artisan up" || true
+
+      - name: Smoke test
+        run: |
+          for path in / /login; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://yallacourier.com$path")
+            echo "$path -> $code"
+            [ "$code" = "200" ] || exit 1
+          done
