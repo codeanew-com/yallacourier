@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 169.95 131.73">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #a75525;
+      }
+
+      .cls-3 {
+        fill: #f9c399;
+      }
+
+      .cls-4 {
+        fill: #eca269;
+      }
+
+      .cls-5 {
+        fill: #bf6828;
+      }
+
+      .cls-6 {
+        fill: none;
+      }
+
+      .cls-7 {
+        fill: #d87e35;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <polygon class="cls-4" points="63.87 92.28 26.02 71.56 26.86 103.48 88.71 131.73 86.28 68.18 63.87 92.28"/>
+      <polygon class="cls-3" points="86.28 68.18 25.16 39.2 4.71 59.9 26.02 71.56 63.87 92.28 86.28 68.18"/>
+      <polygon class="cls-7" points="86.28 68.18 88.71 131.72 143.74 93.98 143.74 66.05 112.65 85.46 86.28 68.18"/>
+      <polygon class="cls-3" points="143.74 32.63 86.28 68.18 112.65 85.46 143.74 66.05 169.95 49.67 143.74 32.63"/>
+      <polygon class="cls-2" points="78.56 10.39 25.16 39.2 80.37 65.38 78.56 10.39"/>
+      <polygon class="cls-5" points="86.28 68.18 143.74 32.63 78.57 10.39 80.37 65.38 86.28 68.18"/>
+      <polygon class="cls-3" points="52.77 9.58 0 40.9 25.16 39.2 78.57 10.39 52.77 9.58"/>
+      <polyline class="cls-3" points="110.38 0 78.56 10.39 143.74 32.63 164.92 22.89 110.38 0"/>
+      <polyline class="cls-1" points="81.41 1.89 33.18 27.27 85.85 55.19 141.06 20.92 81.41 1.89"/>
+      <polyline class="cls-6" points="33.18 1.89 33.18 55.19 141.06 55.19 141.06 1.89"/>
+    </g>
+  </g>
+</svg>

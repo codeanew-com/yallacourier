@@ -1,0 +1,48 @@
+form{
+  input, select, textarea{
+    padding-left: 10px;
+    // border-radius: 4px;
+    color: $theme-lg-black;
+    padding: 10px;
+    font-family: $sub-heading-font-family;
+    border: 0px solid rgba(59, 58, 58, 1);
+    box-shadow: none;
+    font-size: $base-font-size;
+    -webkit-appearance: none;
+    border-radius: 4px;  
+    // border: none;
+    width: 100%;
+  }
+ 
+  input[type=text], input[type=number], input[type=email], select, textarea{
+    background-color: $theme-lg-grey;
+    width: 100%;
+    // margin-top: 15px;
+    margin-bottom: 10px;
+    max-height: 100px;
+  }
+
+  input[type=submit]{
+    background: $theme-secondary;
+    padding: 10px;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    letter-spacing: 1px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 16px;
+    color: $theme-white;
+    margin: 20px auto;
+    min-width: 70px;
+    border: none;
+    @include transition(0.3s);
+    float: right;
+    width: 10%;
+
+    &:hover{
+      background: $theme-secondary;
+    }
+
+  }
+}

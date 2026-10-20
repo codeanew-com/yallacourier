@@ -1,0 +1,36 @@
+# Normalise line endings: LF in the repository, whatever the OS.
+* text=auto eol=lf
+
+# Windows-only scripts keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Better diffs
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+
+# Binary files: never touch line endings, never try to diff
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.otf binary
+*.mp4 binary
+
+# Left out of "git archive" / Composer dist downloads
+/.github export-ignore
+/tests export-ignore
+/phpunit.xml export-ignore
+/.editorconfig export-ignore
+CHANGELOG.md export-ignore
+.styleci.yml export-ignore

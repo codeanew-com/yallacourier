@@ -1,0 +1,66 @@
+# ---------------------------------------------------------------------------
+# This repository is PUBLIC. Never commit credentials, customer data or
+# server-only files. Secrets belong in .env (see .env.example).
+# ---------------------------------------------------------------------------
+
+# Dependencies and build output
+/vendor
+/node_modules
+/public/build
+/public/hot
+/public/storage
+
+# Environment files and credentials (only .env.example is committed)
+.env
+.env.*
+!.env.example
+auth.json
+/storage/*.key
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Customer data and uploaded content
+#  - public/pdf: old copy of customer shipping labels (names, addresses, phones).
+#    Labels now live in storage/app/private (already ignored via storage/app/.gitignore).
+#  - public/uploads: images uploaded through the admin panel; content, not code.
+/public/pdf
+/public/uploads
+
+# Databases, dumps, backups and archives
+*.sql
+*.sqlite
+*.sqlite-journal
+*.bak
+*.zip
+*.rar
+*.tar
+*.tar.gz
+*.7z
+
+# Logs and caches
+*.log
+/.phpunit.cache
+.phpunit.result.cache
+
+# Hosting-panel files (created by the server, not part of the app)
+.ftpquota
+/cgi-bin
+/.well-known
+error_log
+
+# Local tooling and editors
+Homestead.json
+Homestead.yaml
+.phpactor.json
+/.fleet
+/.idea
+/.vscode
+npm-debug.log
+yarn-error.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,622 @@
+/*
+ * Customer account area — dedicated design system.
+ * Scoped to .customer-area so it never touches the public marketing pages'
+ * existing styles. Brand purple (#680895) matches the rest of the site.
+ */
+
+.customer-area {
+  --cd-primary: #680895;
+  --cd-primary-dark: #4e0570;
+  --cd-text: #2a2a2a;
+  --cd-text-muted: #6b7280;
+  --cd-border: #e5e7eb;
+  --cd-bg: #f6f5f8;
+  --cd-card-bg: #ffffff;
+  --cd-radius: 12px;
+  --cd-shadow: 0 1px 3px rgba(16, 15, 13, 0.06), 0 1px 2px rgba(16, 15, 13, 0.08);
+  --cd-space-1: 8px;
+  --cd-space-2: 12px;
+  --cd-space-3: 16px;
+  --cd-space-4: 24px;
+  --cd-space-5: 32px;
+
+  background: var(--cd-bg);
+  color: var(--cd-text);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.customer-area h1, .customer-area h2, .customer-area h3 {
+  color: var(--cd-text);
+  font-weight: 700;
+}
+
+/* ---------- Title bar ---------- */
+.customer-titlebar {
+  background: var(--cd-card-bg);
+  border-bottom: 1px solid var(--cd-border);
+  padding: var(--cd-space-2) 0;
+}
+.customer-titlebar .customer-titlebar-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--cd-space-3);
+}
+.customer-titlebar img { width: 120px; height: auto; flex-shrink: 0; }
+.customer-titlebar h1 { font-size: 1.35rem; margin: 0; text-align: left; }
+.customer-titlebar-branding { display: flex; align-items: center; gap: var(--cd-space-3); flex: 1 1 auto; min-width: 0; }
+.customer-titlebar-action { flex-shrink: 0; margin-left: var(--cd-space-3); }
+.customer-titlebar-action .purple-theme-btn { white-space: nowrap; }
+
+@media (max-width: 575.98px) {
+  .customer-titlebar img { width: 90px; }
+  .customer-titlebar h1 { font-size: 1.1rem; }
+  .customer-titlebar-inner { flex-wrap: wrap; row-gap: var(--cd-space-2); }
+  .customer-titlebar-action { margin-left: 0; width: 100%; }
+  .customer-titlebar-action .purple-theme-btn { display: block; text-align: center; }
+}
+
+/* ---------- Add Shipment modal ---------- */
+.cd-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 15, 13, 0.55);
+  z-index: 1000;
+  padding: var(--cd-space-3);
+  overflow-y: auto;
+}
+.cd-modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+.cd-modal-box {
+  background: var(--cd-primary);
+  border-radius: var(--cd-radius);
+  max-width: 900px;
+  width: 100%;
+  margin: var(--cd-space-4) 0;
+  position: relative;
+  padding: var(--cd-space-4);
+}
+.cd-modal-close {
+  position: absolute;
+  top: var(--cd-space-2);
+  right: var(--cd-space-2);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
+  box-shadow: var(--cd-shadow);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+h2.cd-modal-title { margin: 0 0 var(--cd-space-3); padding-right: 40px; color: #ffffff; }
+
+/* The booking form needs a real <section class="banner-section"> ancestor for its
+ * tab/step CSS to work (see add-shipment-modal/index.blade.php), but that class also
+ * carries hero-banner styling (background color, top padding, a -95px pull-up margin
+ * on .form-wrapper) meant for a page banner, not a modal. Neutralized here. */
+.cd-modal-banner-section {
+  background: transparent !important;
+  padding: 0 !important;
+  position: static !important;
+}
+.cd-modal-banner-section .form-wrapper { margin-top: 0 !important; }
+/* Tab switching is now driven by the wizard below, not manual tab clicks. */
+.cd-modal-banner-section .tab-links { display: none; }
+
+/* ---------- Shipment wizard (2 quick questions before the form) ---------- */
+.cd-wizard { padding: var(--cd-space-2) 0 var(--cd-space-2); }
+.cd-wizard-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cd-space-2);
+  margin-bottom: var(--cd-space-4);
+}
+.cd-wizard-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+.cd-wizard-dot.active { background: #ffffff; color: var(--cd-primary); }
+.cd-wizard-progress-line { width: 48px; height: 2px; background: rgba(255, 255, 255, 0.25); }
+
+.cd-wizard-step { display: none; text-align: center; }
+.cd-wizard-step.active { display: block; }
+.cd-wizard-step h3 { color: #ffffff; margin: 0 0 var(--cd-space-4); font-size: 1.2rem; }
+
+.cd-wizard-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--cd-space-3);
+}
+.cd-wizard-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cd-space-2);
+  width: 200px;
+  padding: var(--cd-space-4) var(--cd-space-3);
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: var(--cd-radius);
+  cursor: pointer;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.cd-wizard-option:hover { border-color: #ABE707; transform: translateY(-2px); }
+.cd-wizard-option img { width: 56px; height: 56px; object-fit: contain; }
+.cd-wizard-option span { font-weight: 700; color: var(--cd-text); }
+
+.cd-wizard-back {
+  display: inline-block;
+  margin-bottom: var(--cd-space-3);
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0;
+}
+.cd-wizard-back:hover { text-decoration: underline; }
+
+.cd-ship-form { display: none; }
+.cd-ship-form.open { display: block; }
+
+@media (max-width: 575.98px) {
+  .cd-modal-box { padding: var(--cd-space-3); margin: 0; border-radius: 0; min-height: 100%; }
+  .cd-modal-overlay { padding: 0; }
+  .cd-wizard-option { width: 100%; max-width: 220px; }
+}
+
+/* ---------- Shell: sidebar + content ---------- */
+.customer-shell {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cd-space-3);
+  padding: var(--cd-space-3) 0 var(--cd-space-4);
+}
+
+/* ---------- Sidebar nav (desktop) ---------- */
+.customer-sidebar {
+  flex: 0 0 230px;
+  background: var(--cd-card-bg);
+  border-radius: var(--cd-radius);
+  box-shadow: var(--cd-shadow);
+  padding: var(--cd-space-2);
+  position: sticky;
+  top: var(--cd-space-4);
+}
+.customer-sidebar ul { list-style: none; margin: 0; padding: 0; }
+.customer-sidebar li { margin-bottom: 2px; }
+.customer-sidebar a {
+  display: flex;
+  align-items: center;
+  gap: var(--cd-space-2);
+  padding: 8px var(--cd-space-2);
+  border-radius: 8px;
+  color: var(--cd-text);
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color .15s ease, color .15s ease;
+}
+.customer-sidebar a:hover { background: var(--cd-bg); }
+.customer-sidebar a.active { background: var(--cd-primary); color: #fff; }
+.customer-sidebar img { width: 18px; height: 18px; object-fit: contain; }
+.customer-sidebar a.active img { filter: brightness(0) invert(1); }
+.customer-sidebar .sub-items { margin: 2px 0 6px 30px; }
+.customer-sidebar .sub-items a { padding: 6px var(--cd-space-2); font-weight: 400; font-size: 0.92rem; }
+.customer-sidebar .logout-item { margin-top: var(--cd-space-2); padding-top: var(--cd-space-2); border-top: 1px solid var(--cd-border); }
+
+/* ---------- Mobile tab bar (replaces sidebar under 992px) ----------
+   Visibility is handled by Bootstrap's d-none/d-lg-* utilities in the
+   HTML, not here — this file only styles layout, not show/hide.
+   Pill-style chips in a horizontally-scrolling strip: each item has its
+   own background so they read as separate tappable buttons instead of
+   cramped inline text, and a 44px+ touch target per Apple/Google's
+   minimum recommended size. */
+.customer-tabbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--cd-card-bg);
+  border-bottom: 1px solid var(--cd-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: var(--cd-space-2) var(--cd-space-3);
+}
+.customer-tabbar::-webkit-scrollbar { display: none; }
+.customer-tabbar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 10px 14px;
+  min-height: 40px;
+  border-radius: 999px;
+  background: var(--cd-bg);
+  color: var(--cd-text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: background-color .15s ease, color .15s ease;
+}
+.customer-tabbar a.active { background: var(--cd-primary); color: #fff; }
+.customer-tabbar a.active img { filter: brightness(0) invert(1); }
+.customer-tabbar img { width: 18px; height: 18px; flex-shrink: 0; object-fit: contain; }
+
+/* ---------- Content area ---------- */
+.customer-content { flex: 1 1 auto; min-width: 0; }
+
+.customer-card {
+  background: var(--cd-card-bg);
+  border-radius: var(--cd-radius);
+  box-shadow: var(--cd-shadow);
+  padding: var(--cd-space-3);
+  margin-bottom: var(--cd-space-3);
+}
+.customer-card h2 {
+  font-size: 1.1rem;
+  margin: 0 0 var(--cd-space-3);
+  padding-bottom: var(--cd-space-2);
+  border-bottom: 1px solid var(--cd-border);
+}
+
+/* ---------- Stat chips (balance, counts, etc.) ---------- */
+.customer-stats { display: flex; flex-wrap: wrap; gap: var(--cd-space-3); margin-bottom: var(--cd-space-4); }
+.customer-stat {
+  flex: 1 1 180px;
+  background: var(--cd-card-bg);
+  border-radius: var(--cd-radius);
+  box-shadow: var(--cd-shadow);
+  padding: var(--cd-space-3) var(--cd-space-4);
+}
+.customer-stat .label { color: var(--cd-text-muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: .03em; }
+.customer-stat .value { font-size: 1.6rem; font-weight: 700; color: var(--cd-primary); margin-top: 4px; }
+
+/* ---------- Tables (responsive) ---------- */
+.customer-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.customer-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.customer-table th {
+  text-align: left;
+  color: var(--cd-text-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  padding: var(--cd-space-2) var(--cd-space-2);
+  border-bottom: 1px solid var(--cd-border);
+  white-space: nowrap;
+}
+.customer-table td {
+  padding: var(--cd-space-2) var(--cd-space-2);
+  border-bottom: 1px solid var(--cd-border);
+  vertical-align: middle;
+}
+.customer-table tr:last-child td { border-bottom: none; }
+
+/* ---------- Empty states ---------- */
+.customer-empty { text-align: center; padding: var(--cd-space-5) var(--cd-space-3); color: var(--cd-text-muted); }
+.customer-empty img, .customer-empty svg { width: 64px; opacity: .5; margin-bottom: var(--cd-space-3); }
+
+/* ---------- Badges (status pills) ---------- */
+.customer-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.customer-badge.success { background: #e6f4ea; color: #1e7e34; }
+.customer-badge.pending { background: #fff4e5; color: #b26a00; }
+.customer-badge.default { background: #f1f0f3; color: var(--cd-text-muted); }
+
+/* ---------- Forms inside the customer area ----------
+ * Previously styled .form-wrapper/.input-wrapper/.submit-wrapper generically
+ * for the (now-removed) "Shipment defaults" placeholder. Those are the same
+ * classes the real quote/booking form (searchcourier/index.blade.php) uses
+ * for its own fields, so these rules were leaking onto — and breaking — the
+ * Add New Shipment modal's form on every customer page. Removed (2026-10-18)
+ * now that nothing needs them; the booking form keeps its own site-wide
+ * styling from style.css as it did before the dashboard redesign.
+ *
+ * The Profile edit form below uses its own "cd-profile-*" classes instead
+ * of .form-wrapper/.input-wrapper, specifically so this doesn't happen again. */
+.cd-profile-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--cd-space-3);
+  max-width: 640px;
+}
+.cd-profile-field { display: flex; flex-direction: column; gap: 6px; }
+.cd-profile-field label { font-weight: 600; font-size: 0.88rem; color: var(--cd-text); }
+.cd-profile-field input {
+  width: 100%;
+  padding: 10px var(--cd-space-2);
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--cd-text);
+  background: var(--cd-bg);
+}
+.cd-profile-field input:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 1px; }
+.cd-profile-field input:disabled { color: var(--cd-text-muted); cursor: not-allowed; }
+/* Every input in this form must look identical — same background in every
+   state (normal, disabled, browser-autofilled). !important here is
+   deliberate: it overrides both the :disabled rule above and whatever
+   background a browser's autofill tries to apply on its own. */
+.cd-profile-field input,
+.cd-profile-field input:disabled,
+.cd-profile-field input:-webkit-autofill,
+.cd-profile-field input:-webkit-autofill:hover,
+.cd-profile-field input:-webkit-autofill:focus {
+  background-color: var(--cd-bg) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--cd-bg) inset !important;
+  -webkit-text-fill-color: var(--cd-text) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+.cd-profile-field-submit { grid-column: 1 / -1; margin-top: var(--cd-space-1); }
+
+@media (max-width: 575.98px) {
+  .cd-profile-form { grid-template-columns: 1fr; }
+}
+
+/* ====================== Responsive ====================== */
+@media (max-width: 991.98px) {
+  /* min-width:0 is required here: a flex item's min-width defaults to the
+     width of its content, so without it the tabbar's nowrap pills refuse
+     to shrink below their natural width and overflow the page instead of
+     scrolling inside themselves — that overflow forces the whole <body>
+     wider than the device viewport, which makes mobile browsers zoom the
+     entire page out to fit it (everything renders shrunk down, "like PC"). */
+  .customer-shell { flex-direction: column; padding-top: 0; align-items: stretch; min-width: 0; }
+  .customer-content { width: 100%; min-width: 0; }
+  .customer-tabbar { width: 100%; min-width: 0; }
+  .customer-card { padding: var(--cd-space-3); border-radius: 8px; }
+  .customer-titlebar h1 { font-size: 1.1rem; }
+  .customer-stats { gap: var(--cd-space-2); }
+  .customer-stat { flex: 1 1 140px; padding: var(--cd-space-2) var(--cd-space-3); }
+  .customer-stat .value { font-size: 1.3rem; }
+}
+
+@media (max-width: 575.98px) {
+  .customer-stats { flex-direction: column; }
+  .customer-stat { flex: 1 1 auto; }
+}
+
+/* ====================== Customer footer ======================
+ * Rendered in the master layout outside .customer-area, so it
+ * can't rely on the --cd-* variables above — kept self-contained.
+ *
+ * Pinned to the bottom of the viewport on short pages (min-height:100vh
+ * flex column). This does leave an empty gap above the footer on short
+ * pages — that's an unavoidable side effect of pinning, not a bug; it's
+ * a deliberate choice. The earlier "page zooms out like a PC" issue was a
+ * separate bug (the mobile tab bar overflowing the viewport) that's fixed
+ * independently — see .customer-tabbar's min-width:0 below. */
+body.customer-account-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+body.customer-account-body .customer-area {
+  flex: 1 0 auto;
+}
+.customer-footer {
+  flex-shrink: 0;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  padding: 10px 0;
+}
+.customer-footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.customer-footer-copyright {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.customer-footer-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25D366;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 7px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.customer-footer-whatsapp:hover { background: #1ebe59; color: #ffffff; }
+
+@media (max-width: 575.98px) {
+  .customer-footer-inner { flex-direction: column; text-align: center; }
+}
+
+/* ====================== Wallet top-up disabled notice ====================== */
+.customer-topup-notice {
+  background: #fff8e6;
+  border: 1px solid #f3dca3;
+  border-radius: var(--cd-radius);
+  padding: var(--cd-space-3);
+}
+.customer-topup-notice h5 {
+  margin: 0 0 var(--cd-space-1);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cd-text);
+}
+.customer-topup-notice p {
+  margin: 0 0 var(--cd-space-2);
+  color: var(--cd-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.customer-topup-notice-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25D366;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.customer-topup-notice-whatsapp:hover { background: #1ebe59; color: #ffffff; }
+
+/* ====================== Wallet / top-up (eBilling) ======================
+ * The old theme styled this markup via .tabing-sec .main-tabing
+ * .main-content-box .tab-contents — ancestor wrappers that no longer exist
+ * in the redesigned page, so the balance box, amount chips and Stripe
+ * payment form were rendering with no styling at all. Re-themed here to
+ * match the rest of the dashboard; markup, IDs and JS untouched. */
+.customer-area .transcations-box {
+  display: flex;
+  align-items: center;
+  gap: var(--cd-space-3);
+  background: #f3ecf7;
+  border: 1px solid var(--cd-border);
+  border-radius: var(--cd-radius);
+  padding: var(--cd-space-3);
+  margin-bottom: var(--cd-space-3);
+}
+.customer-area .transcations-box .img-box img { width: 40px; height: 40px; }
+.customer-area .transcations-details { color: var(--cd-text-muted); font-size: 0.85rem; }
+.customer-area .transcations-details h3 { margin: 0; font-size: 1.6rem; color: var(--cd-text); }
+
+.customer-area .wallet-box,
+.customer-area .wallet-top-up-box {
+  padding: var(--cd-space-2) 0;
+  border-bottom: 1px solid var(--cd-border);
+}
+.customer-area .wallet-box h5,
+.customer-area .wallet-top-up-box h4,
+.customer-area .Connect-bank-account h5 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.customer-area .Connect-bank-account { padding-top: var(--cd-space-3); }
+.customer-area .Connect-bank-account h5:nth-of-type(2) {
+  font-weight: 400;
+  color: var(--cd-text-muted);
+  margin-top: 4px;
+}
+
+.customer-area .connect-list {
+  flex-wrap: wrap;
+  gap: var(--cd-space-2);
+  margin: var(--cd-space-3) 0;
+}
+.customer-area .connect-list ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cd-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.customer-area .connect-list ul li.load_amount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  height: 42px;
+  padding: 0 var(--cd-space-2);
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.customer-area .connect-list ul li.load_amount:hover { border-color: var(--cd-primary); }
+.customer-area .connect-list ul li.load_amount.active {
+  background-color: var(--cd-primary) !important;
+  border-color: var(--cd-primary);
+  color: #fff !important;
+}
+.customer-area .list-input-box { position: relative; display: inline-flex; align-items: center; }
+.customer-area .list-input-box .list-input {
+  height: 42px;
+  padding: 0 var(--cd-space-2) 0 32px;
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  width: 130px;
+  font-size: 0.95rem;
+}
+.customer-area .list-input-box .list-input:focus-visible { outline: 2px solid var(--cd-primary); outline-offset: 1px; }
+.customer-area .list-input-box span { position: absolute; left: 10px; color: var(--cd-text-muted); }
+
+.customer-area .button-box { margin-top: var(--cd-space-3); }
+.customer-area #take_me_to_payment,
+.customer-area #payment-form #submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 200px;
+  height: 46px;
+  padding: 0 var(--cd-space-4);
+  background-color: var(--cd-primary);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+.customer-area #take_me_to_payment:hover,
+.customer-area #payment-form #submit:hover:not(:disabled) { background-color: var(--cd-primary-dark); }
+.customer-area #payment-form #submit:disabled { opacity: .6; cursor: not-allowed; }
+
+.customer-area #payment-element { margin: var(--cd-space-3) 0; }
+.customer-area #payment-message {
+  margin-top: var(--cd-space-2);
+  padding: var(--cd-space-2) var(--cd-space-3);
+  border-radius: 8px;
+  background: #fdecea;
+  color: #b42318;
+  font-size: 0.9rem;
+}
+.customer-area .spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, .4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: cd-spin .7s linear infinite;
+}
+@keyframes cd-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 575.98px) {
+  .customer-area .transcations-box { padding: var(--cd-space-2); }
+  .customer-area .connect-list ul li.load_amount { min-width: 68px; height: 38px; font-size: 0.85rem; }
+  .customer-area #take_me_to_payment,
+  .customer-area #payment-form #submit { width: 100%; }
+}

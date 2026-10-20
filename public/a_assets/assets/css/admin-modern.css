@@ -1,0 +1,141 @@
+/*
+ * Admin design layer (2026-10-20) — sits on top of the Skote/Bootstrap 5 theme
+ * (app.min.css) and only standardises spacing, hierarchy and a few shared
+ * components. Use these classes on new admin screens instead of inline styles.
+ */
+:root {
+    --adm-bg: #f4f6fb;
+    --adm-surface: #ffffff;
+    --adm-border: #e6e9f0;
+    --adm-text: #1f2937;
+    --adm-muted: #6b7280;
+    --adm-primary: #556ee6;
+    --adm-primary-soft: rgba(85, 110, 230, .1);
+    --adm-success: #22a06b;
+    --adm-success-soft: rgba(34, 160, 107, .12);
+    --adm-warning: #c27c0e;
+    --adm-warning-soft: rgba(241, 180, 76, .18);
+    --adm-danger: #d64545;
+    --adm-danger-soft: rgba(244, 106, 106, .12);
+    --adm-radius: 10px;
+    --adm-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .06);
+}
+
+body { background: var(--adm-bg); color: var(--adm-text); }
+.page-content { padding-bottom: 80px; }
+.card { border: 1px solid var(--adm-border); border-radius: var(--adm-radius); box-shadow: var(--adm-shadow); }
+.card-header { background: transparent; border-bottom: 1px solid var(--adm-border); padding: .9rem 1.25rem; }
+.card-header h5, .card-header .card-title { margin: 0; font-size: .95rem; font-weight: 600; }
+.form-label { font-weight: 500; font-size: .8125rem; color: #374151; margin-bottom: .35rem; }
+.form-text { font-size: .75rem; }
+.table > :not(caption) > * > * { padding: .65rem .75rem; }
+.table thead th { font-size: .75rem; text-transform: uppercase; letter-spacing: .03em; color: var(--adm-muted); font-weight: 600; background: #f9fafc; border-bottom-width: 1px; }
+.table-hover tbody tr:hover { background: #f8f9ff; }
+
+/* Page header: title + context on the left, primary actions on the right. */
+.adm-page-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.adm-page-header h1 { font-size: 1.35rem; font-weight: 600; margin: 0; color: var(--adm-text); }
+.adm-page-header .adm-subtitle { color: var(--adm-muted); font-size: .85rem; margin-top: .2rem; }
+.adm-page-header .adm-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.adm-breadcrumb { font-size: .78rem; color: var(--adm-muted); margin-bottom: .25rem; }
+.adm-breadcrumb a { color: var(--adm-muted); }
+.adm-breadcrumb a:hover { color: var(--adm-primary); }
+
+/* KPI tiles */
+.adm-kpi { padding: 1rem 1.15rem; height: 100%; }
+.adm-kpi .adm-kpi-label { font-size: .75rem; color: var(--adm-muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+.adm-kpi .adm-kpi-value { font-size: 1.35rem; font-weight: 600; margin-top: .3rem; color: var(--adm-text); font-variant-numeric: tabular-nums; }
+.adm-kpi .adm-kpi-note { font-size: .75rem; color: var(--adm-muted); margin-top: .15rem; }
+a.adm-kpi-link { color: inherit; display: block; height: 100%; }
+a.adm-kpi-link .card { transition: border-color .15s, transform .15s; }
+a.adm-kpi-link:hover .card { border-color: var(--adm-primary); }
+
+/* Status pills — one vocabulary for every list */
+.adm-pill { display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .55rem; border-radius: 999px; font-size: .72rem; font-weight: 600; line-height: 1.3; white-space: nowrap; }
+.adm-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.adm-pill-neutral { background: #eef0f4; color: #4b5563; }
+.adm-pill-info { background: var(--adm-primary-soft); color: var(--adm-primary); }
+.adm-pill-success { background: var(--adm-success-soft); color: var(--adm-success); }
+.adm-pill-warning { background: var(--adm-warning-soft); color: var(--adm-warning); }
+.adm-pill-danger { background: var(--adm-danger-soft); color: var(--adm-danger); }
+.adm-pill-teal { background: rgba(13, 148, 136, .12); color: #0f766e; }
+
+/* Filter bar & status tabs */
+.adm-filterbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-end; }
+.adm-filterbar .form-control, .adm-filterbar .form-select { min-width: 140px; }
+.adm-filterbar .adm-grow { flex: 1 1 240px; }
+.adm-tabs { display: flex; flex-wrap: wrap; gap: .25rem; border-bottom: 1px solid var(--adm-border); margin-bottom: 1rem; }
+.adm-tabs a { padding: .55rem .9rem; color: var(--adm-muted); font-weight: 500; font-size: .85rem; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.adm-tabs a:hover { color: var(--adm-text); }
+.adm-tabs a.active { color: var(--adm-primary); border-bottom-color: var(--adm-primary); }
+.adm-tabs .adm-count { font-size: .7rem; background: #eef0f4; color: #4b5563; border-radius: 999px; padding: .05rem .45rem; margin-left: .3rem; }
+.adm-tabs a.active .adm-count { background: var(--adm-primary-soft); color: var(--adm-primary); }
+
+/* Bulk-action bar: shown above the table when rows are selected, pinned below the 70px top bar while scrolling */
+.adm-bulkbar { position: sticky; top: 78px; z-index: 20; display: none; align-items: center; justify-content: space-between; gap: 1rem; background: #1f2937; color: #fff; border-radius: var(--adm-radius); padding: .7rem 1rem; margin-bottom: 1rem; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
+.adm-bulkbar.show { display: flex; }
+
+/* Unread rows (business leads) */
+.adm-row-unread { background: #f7f8ff; }
+.adm-unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--adm-primary); flex: none; }
+
+/* Definition-style read-only rows (summaries) */
+.adm-summary-row { display: flex; justify-content: space-between; align-items: baseline; padding: .4rem 0; font-size: .875rem; }
+.adm-summary-row + .adm-summary-row { border-top: 1px dashed var(--adm-border); }
+.adm-summary-row .adm-summary-value { font-variant-numeric: tabular-nums; font-weight: 500; }
+.adm-summary-total { font-size: 1.05rem; font-weight: 600; border-top: 1px solid var(--adm-border) !important; padding-top: .65rem; margin-top: .25rem; }
+
+/* Computed (read-only) money fields */
+.adm-computed { background: #f6f8ff !important; border-style: dashed !important; font-weight: 600; font-variant-numeric: tabular-nums; }
+.adm-auto-badge { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; background: var(--adm-primary-soft); color: var(--adm-primary); border-radius: 4px; padding: .1rem .35rem; margin-left: .35rem; vertical-align: middle; }
+.adm-link-btn { background: none; border: 0; padding: 0; color: var(--adm-primary); font-size: .75rem; cursor: pointer; }
+.adm-link-btn:hover { text-decoration: underline; }
+
+/* Next-step callout */
+.adm-next-step { display: flex; gap: .75rem; align-items: flex-start; background: var(--adm-warning-soft); border: 1px solid rgba(241,180,76,.45); border-radius: var(--adm-radius); padding: .75rem 1rem; font-size: .875rem; }
+.adm-next-step.done { background: var(--adm-success-soft); border-color: rgba(34,160,107,.35); }
+.adm-next-step i { font-size: 1.25rem; line-height: 1; margin-top: .05rem; }
+
+/* Empty states */
+.adm-empty { text-align: center; padding: 2.5rem 1rem; color: var(--adm-muted); }
+.adm-empty i { font-size: 2rem; display: block; margin-bottom: .5rem; opacity: .6; }
+
+/* Sticky form footer so Save is always reachable on long forms */
+.adm-form-footer { position: sticky; bottom: 0; z-index: 15; background: rgba(255,255,255,.96); backdrop-filter: blur(4px); border-top: 1px solid var(--adm-border); padding: .75rem 1.25rem; margin: 1.5rem -1.25rem -1.25rem; display: flex; justify-content: flex-end; gap: .5rem; border-radius: 0 0 var(--adm-radius) var(--adm-radius); }
+.adm-section-title { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--adm-muted); font-weight: 600; margin: 1.25rem 0 .75rem; padding-bottom: .4rem; border-bottom: 1px solid var(--adm-border); }
+.adm-section-title:first-child { margin-top: 0; }
+
+/* Activity timeline */
+.adm-timeline { list-style: none; padding: 0; margin: 0; }
+.adm-timeline li { position: relative; padding: 0 0 .9rem 1.1rem; font-size: .8125rem; }
+.adm-timeline li::before { content: ""; position: absolute; left: 0; top: .4rem; width: 7px; height: 7px; border-radius: 50%; background: var(--adm-primary); }
+.adm-timeline li::after { content: ""; position: absolute; left: 3px; top: 1rem; bottom: 0; width: 1px; background: var(--adm-border); }
+.adm-timeline li:last-child::after { display: none; }
+.adm-timeline .adm-time { color: var(--adm-muted); font-size: .72rem; }
+
+/* The logo SVG is purple; render it white on the dark sidebar/brand box (file left unchanged). */
+body[data-sidebar=dark] .navbar-brand-box .logo img { filter: brightness(0) invert(1); }
+
+/* Sidebar polish */
+#sidebar-menu ul li a .adm-menu-badge { margin-left: auto; float: right; font-size: .68rem; }
+#sidebar-menu ul li a.active, #sidebar-menu ul li.mm-active > a { color: #fff !important; }
+#sidebar-menu ul li a.active i { color: #fff !important; }
+body[data-sidebar=dark] #sidebar-menu ul li a.active { background: rgba(255,255,255,.06); }
+
+/* Toast-style flash */
+.adm-flash { display: flex; align-items: flex-start; gap: .6rem; border-radius: var(--adm-radius); }
+.adm-flash i { font-size: 1.15rem; line-height: 1.2; }
+
+/* Pagination spacing */
+.pagination { margin: 0; flex-wrap: wrap; }
+.adm-table-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; margin-top: 1rem; font-size: .8125rem; color: var(--adm-muted); }
+
+/* Submit buttons while the form is being sent */
+.btn.is-loading { pointer-events: none; opacity: .75; }
+
+@media (max-width: 575.98px) {
+    .adm-page-header { align-items: flex-start; }
+    .adm-bulkbar { flex-direction: column; align-items: stretch; }
+    .adm-form-footer { justify-content: stretch; }
+    .adm-form-footer .btn { flex: 1; }
+}

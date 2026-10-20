@@ -1,0 +1,221 @@
+// Font : Montserrat
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('fonts/Montserrat/Montserrat-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/Montserrat/Montserrat-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/Montserrat/Montserrat-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/Montserrat/Montserrat-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('fonts/Montserrat/Montserrat-ExtraBold.ttf') format('truetype');
+}
+
+// Font : Poppins
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('fonts/Poppins/Poppins-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/Poppins/Poppins-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('fonts/Poppins/Poppins-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('fonts/Poppins/Poppins-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/Poppins/Poppins-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('fonts/Poppins/Poppins-ExtraBold.ttf') format('truetype');
+}
+
+// Helvetica
+
+@font-face {
+  font-family: 'Helvetica';
+  font-style: normal;
+  font-weight: 400;
+  // font-display: swap;
+  src: url('fonts/Helvetica/Helvetica.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Helvetica';
+  font-style: normal;
+  font-weight: 300;
+  // font-display: swap;
+  src: url('fonts/Helvetica/helvetica-light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Helvetica';
+  font-style: normal;
+  font-weight: 700;
+  // font-display: swap;
+  src: url('fonts/Helvetica/Helvetica-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Helvetica';
+  font-style: normal;
+  font-weight: 900;
+  // font-display: swap;
+  src: url('fonts/Helvetica/Helvetica-BoldOblique.ttf') format('truetype');
+}
+
+$base-font-family		:   "Helvetica";
+$heading-font-family	:   "Helvetica"; 
+$sub-heading-font-family:   'franklin-gothic-medium';
+$paragraph-font-family	: 	'Helvetica';
+
+$font-special			: 	'slogan', serif;
+$font-another-special 	: 	'Playfair';
+$icon-font-family   	:   'FontAwesome';
+
+$base-line-height		: 	2em;
+//** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
+
+$base-font-size		: 	16px !default; // 16px
+$font-size-h1			: 	50px; 		  // 62px
+$font-size-h2			: 	46px;		  // 46px
+$font-size-h3			: 	32px;	  // 32px
+$font-size-h4			: 	25px; 		  // 21px
+$font-size-h5			: 	1.25em;       // 17.5px
+$font-size-h6			: 	1em;	      // 14px
+
+$font-size-xsmall		: 	0.714289em;   // 10px
+$font-size-small		: 	0.85714em;    // 12px
+$font-size-medium		: 	1.14286em;    // 16px
+$font-size-large		: 	1.285717em;   // 18px
+$font-size-xlarge		: 	1.714285em;   // 24px
+
+$font-weight-black		: 	900;
+$font-weight-bold		: 	700;
+$font-weight-semi-bold	: 	500;
+$font-weight-normal		: 	400;
+$font-weight-light		: 	300;
+$font-weight-thin		: 	100;
+
+
+$font-size-h1-res		: 	2.85714em;	  // 40px
+$font-size-h2-res		: 	2.42857em;	  // 34px
+$font-size-h3-res		: 	1.714285em;	  // 24px
+$font-size-h4-res		: 	1.42857em;	  // 20px
+$font-size-h5-res		: 	1.14286em;    // 16px
+$font-size-h6-res		: 	1em;		  // 14px
+
+
+//== Color Variation
+//
+//## Text color, Background color, Border color.
+
+$theme-default	: 	#000000;
+$theme-white	: 	#ffffff;
+$theme-black	: 	#000000;
+$theme-silver	: 	#f1f1f1;
+$theme-grey		: 	#666666;
+$theme-lg-grey	: 	#F7F7F7;
+$theme-sp-grey	: 	#363636;
+$theme-dk-grey 	: 	#373c3f;
+$theme-sp-blue	:	#f3f9f9;
+$theme-lg-black :   #3B3A3A;
+$theme-lg-white : 	#E2EAF3;
+$theme-dk-pink	:   #C6C6C6;
+$theme-lg-black	: 	#434343;
+$theme-lg-pink 	: 	#bcbcbc;
+$theme-purple 	: 	#4B0082;
+$theme-dk-green	: 	#4c4c4c;
+$theme-lg-white	: 	#f0f2f5;
+$theme-lg-silver: 	#B3B3B3;
+$theme-lg-blue 	:  	#3D5975;
+$theme-dk-blue	:   #10121E;
+
+// Theme Colors
+
+$theme-primary	: 	#000000;
+$theme-middle	: 	#680895;
+$theme-secondary: 	#A6E207;
+$theme-blue 	: 	#5aafe4;
+$theme-pink		:	#C6C6C6;
+
+$link-color		: 	#ffffff;
+
+//== Sprite Path
+//
+
+$sprite-image			: 	"sprite.png";
+$media-basepath			: 	"images";
+$full-path				: 	"#{$media-basepath}/#{$sprite-image}";
+
+
+// Icon Fonts Path
+// $icomoon-font-path: "assets-web/icon-fonts/fonts" !default;
